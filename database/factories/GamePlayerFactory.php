@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Product;
+use App\Models\GamePlayer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Product>
+ * @extends Factory<GamePlayer>
  */
-class ProductFactory extends Factory
+class GamePlayerFactory extends Factory
 {
     /**
      * Define the model's default state.
