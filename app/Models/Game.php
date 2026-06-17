@@ -29,7 +29,6 @@ class Game extends Model
         return $this->belongsTo(Team::class, 'away_team_id');
     }
     
-
     public function stats()
     {
         return $this->hasMany(GamePlayer::class);
