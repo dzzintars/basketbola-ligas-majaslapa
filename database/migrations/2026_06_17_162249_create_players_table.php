@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('team_id')->nullable()->constrained('teams')->nullOnDelete();
+            $table->string('name');
+            $table->string('position')->nullable();
+            $table->integer('jersey_number')->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }
