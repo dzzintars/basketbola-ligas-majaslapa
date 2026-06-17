@@ -17,8 +17,29 @@ class TeamFactory extends Factory
      */
     public function definition(): array
     {
+        $teamNames = [
+            'Hawks',
+            'Celtics',
+            'Nets',
+            'Hornets',
+            'Bulls',
+            'Cavaliers',
+            'Mavericks',
+            'Nuggets',
+            'Pistons',
+            'Warriors',
+            'Rockets',
+            'Pacers',
+            'Clippers',
+            'Lakers',
+            'Grizzlies',
+        ];
+        $city = $this->faker->city();
+
         return [
-            //
+            'name' => $city . ' ' . $this->faker->randomElement($teamNames),
+            'city' => $city,
+            'logo_path' => 'logos/logo' . rand(1, 4) . '.png',
         ];
     }
 }

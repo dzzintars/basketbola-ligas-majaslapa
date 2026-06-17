@@ -17,8 +17,11 @@ class PlayerFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
+         return [
+            'name' => $this->faker->firstNameMale() . ' ' . $this->faker->lastName(),
+            'position' => $this->faker->randomElement(['PG', 'SG', 'SF', 'PF', 'C']),
+            'jersey_number' => $this->faker->numberBetween(0, 99),
+            'image_path' => null,
         ];
     }
 }
