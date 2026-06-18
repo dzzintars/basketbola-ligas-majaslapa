@@ -3,63 +3,82 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class GameController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $games = Game::with(['homeTeam', 'awayTeam'])->orderBy('game_date', 'desc')->get();
+        return view('games.index', compact('games'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Game $game)
     {
-        //
+        $game->load(['homeTeam', 'awayTeam']);
+        return view('games.show', compact('game'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    public function create()
+    {
+        Gate::authorize('admin');
+        $teams = Team::all();
+        return view('games.create', compact('teams'));
+    }
+
+    public function store(Request $request)
+    {
+        Gate::authorize('admin');
+        $validated = $request->validate([
+            'home_team_id' => 'required|exists:teams,id',
+            'away_team_id' => 'required|exists:teams,id|different:home_team_id',
+            'game_date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'season' => 'required|string|max:20',
+            'status' => 'required|in:scheduled,finished',
+            'home_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
+            'away_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
+        ]);
+
+        Game::create($validated);
+
+        return redirect()->route('games.index')->with('success', 'Spēle ieplānota!');
+    }
+
+
+
     public function edit(Game $game)
     {
-        //
+        Gate::authorize('admin');
+        $teams = Team::all();
+        return view('games.edit', compact('game', 'teams'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Game $game)
     {
-        //
+        Gate::authorize('admin');
+        $validated = $request->validate([
+            'home_team_id' => 'required|exists:teams,id',
+            'away_team_id' => 'required|exists:teams,id|different:home_team_id',
+            'game_date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'season' => 'required|string|max:20',
+            'status' => 'required|in:scheduled,finished,canceled',
+            'home_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
+            'away_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
+        ]);
+
+        $game->update($validated);
+
+        return redirect()->route('games.show', $game->id)->with('success', 'Spēles informācija atjaunināta!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Game $game)
     {
-        //
+        Gate::authorize('admin');
+        $game->delete();
+        return redirect()->route('games.index')->with('success', 'Spēle izdzēsta!');
     }
 }

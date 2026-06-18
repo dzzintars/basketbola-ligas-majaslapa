@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage as FacadesStorage;
-use Pest\Plugins\Tia\Storage;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -70,11 +69,7 @@ class TeamController extends Controller
         ]);
 
         $logoPath = $team->logo_path;
-
         if ($request->hasFile('logo')) {
-            if ($team->logo_path) {
-                FacadesStorage::disk('public')->delete($team->logo_path);
-            }
             $logoPath = $request->file('logo')->store('logos', 'public');
         }
 
@@ -90,12 +85,7 @@ class TeamController extends Controller
     public function destroy(Team $team)
     {
         Gate::authorize('admin');
-        if ($team->logo_path) {
-            FacadesStorage::disk('public')->delete($team->logo_path);
-        }
-
         $team->delete();
-
         return redirect()->route('teams.index')->with('success', 'Komanda izdzēsta!');
     }
 }

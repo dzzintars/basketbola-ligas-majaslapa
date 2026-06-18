@@ -3,63 +3,110 @@
 namespace App\Http\Controllers;
 
 use App\Models\Player;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PlayerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Attēlo spēlētājus ar filtriem
+    public function index(Request $request)
     {
-        //
+        $query = Player::with('team');
+
+        if ($request->filled('team_id')) {
+            $query->where('team_id', $request->team_id);
+        }
+        if ($request->filled('position')) {
+            $query->where('position', $request->position);
+        }
+
+        $players = $query->paginate(6);
+        $teams = Team::all();
+        return view('players.index', compact('players', 'teams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Player $player)
     {
-        //
+        $player->load('team');
+        return view('players.show', compact('player'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    public function create()
+    {
+        Gate::authorize('admin');
+        $teams = Team::all();
+        return view('players.create', compact('teams'));
+    }
+
+    public function store(Request $request)
+    {
+        Gate::authorize('admin');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'team_id' => 'required|exists:teams,id',
+            'position' => 'required|string|max:10',
+            'jersey_number' => 'required|integer|min:0|max:99',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('players', 'public');
+        }
+
+        Player::create([
+            'name' => $request->name,
+            'team_id' => $request->team_id,
+            'position' => $request->position,
+            'jersey_number' => $request->jersey_number,
+            'image_path' => $imagePath,
+        ]);
+
+        return redirect()->route('players.index')->with('success', 'Spēlētājs pievienots!');
+    }
+
+
     public function edit(Player $player)
     {
-        //
+        Gate::authorize('admin');
+        $teams = Team::all();
+        return view('players.edit', compact('player', 'teams'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Player $player)
     {
-        //
+        Gate::authorize('admin');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'team_id' => 'required|exists:teams,id',
+            'position' => 'required|string|max:10',
+            'jersey_number' => 'required|integer|min:0|max:99',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $imagePath = $player->image_path;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('players', 'public');
+        }
+
+        $player->update([
+            'name' => $request->name,
+            'team_id' => $request->team_id,
+            'position' => $request->position,
+            'jersey_number' => $request->jersey_number,
+            'image_path' => $imagePath,
+        ]);
+
+        return redirect()->route('players.show', $player->id)->with('success', 'Spēlētājs atjaunināts!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Player $player)
     {
-        //
+        Gate::authorize('admin');
+        $player->delete();
+        return redirect()->route('players.index')->with('success', 'Spēlētājs izdzēsts!');
     }
 }
