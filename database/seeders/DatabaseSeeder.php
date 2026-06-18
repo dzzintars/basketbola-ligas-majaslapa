@@ -20,11 +20,26 @@ class DatabaseSeeder extends Seeder
     {
         // Admin account
         User::create([
-            'name' => 'Galvenais Administrators',
-            'email' => 'admin@a',
-            'password' => Hash::make('12345678'),
+            'name' => 'Admins',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('12345677'),
             'role' => 'admin',
         ]);
+
+        User::create([
+            'name' => 'Tiesnesis Andris',
+            'email' => 'andris@gmail.com',
+            'password' => Hash::make('12345677'),
+            'role' => 'referee',
+        ]);
+
+        User::create([
+            'name' => 'Tiesnesis Jānis',
+            'email' => 'janis@gmail.com',
+            'password' => Hash::make('12345677'),
+            'role' => 'referee',
+        ]);
+
         Team::factory()->count(4)
             ->has(Player::factory()->count(7))
             ->create();

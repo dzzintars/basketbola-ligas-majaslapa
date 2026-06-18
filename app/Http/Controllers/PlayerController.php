@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use App\Models\Player;
 use App\Models\Team;
 use Illuminate\Http\Request;
@@ -30,7 +31,16 @@ class PlayerController extends Controller
     public function show(Player $player)
     {
         $player->load('team');
-        return view('players.show', compact('player'));
+        $games = collect(); 
+        if ($player->team_id) {
+            $games = Game::with(['homeTeam', 'awayTeam'])
+                ->where('home_team_id', $player->team_id)
+                ->orWhere('away_team_id', $player->team_id)
+                ->orderBy('game_date', 'desc')
+                ->get();
+        }
+
+        return view('players.show', compact('player', 'games'));
     }
 
     public function create()

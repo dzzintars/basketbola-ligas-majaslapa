@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin', function (User $user) {
             return $user->role === 'admin'; 
         });
+
+        Gate::define('manage-games', function (User $user) {
+            return $user->role === 'admin' || $user->role === 'referee';
+        });
     }
 }

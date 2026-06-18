@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Add new player') }}
+            {{ __('Edit a player') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                            Name
+                            {{ __('Name') }}
                         </label>
                         <input type="text" name="name" id="name" value="{{ $player->name }}" required
                             class="shadow  border rounded w-full py-2 px-3 text-gray-700">
@@ -24,7 +24,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="jersey_number">
-                            Jersey nr
+                            {{ __('Jersey nr') }}
                         </label>
                         <input type="number" name="jersey_number" id="jersey_number" value="{{ $player->jersey_number }}" min="0" max="99"
                             required class="shadow  border rounded w-full py-2 px-3 text-gray-700">
@@ -32,10 +32,10 @@
                     <div class="mb-4">
 
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="team_id">
-                            Team
+                            {{ __('Team') }}
                         </label>
                         <select name="team_id" required class="border rounded pr-10 w-1/2">
-                            <option value="">Choose a team...</option>
+                            <option value="">{{ __('Choose a team...') }}</option>
                             @foreach ($teams as $team)
                                 <option value="{{ $team->id }}" {{ $player->team_id == $team->id ? 'selected' : '' }}>{{ $team->name }}</option>
                             @endforeach
@@ -43,22 +43,22 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="position">
-                            Position
+                            {{ __('Position') }}
                         </label>
                         <select name="position" required class="border rounded pr-10 w-1/2">
-                            <option value="">Choose a position..</option>
+                            <option value="">{{ __('Choose a position..') }}</option>
                             @foreach (['PG', 'SG', 'SF', 'PF', 'C'] as $pos)
                                 <option value="{{ $pos }}" {{ $player->position == $pos ? 'selected' : '' }}>{{ $pos }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Players photo (Leave empty, if don't want to change)</label>
+                        <label for="image" class="block text-gray-700 text-sm font-bold mb-2">{{ __('Players photo') }} {{ __('(Leave empty, if don\'t want to change)') }}</label>
                         <input type="file" name="image" id="image" accept="image/*"
                             class="mt-1 block w-full border-gray-300 shadow-sm">
                     </div>
                     <button type="submit" class="btn-primary">
-                        Update
+                        {{ __('Edit') }}
                     </button>
                     <a href="{{ route('players.index') }}"
                         class="hover:bg-gray-500 hover:text-black text-gray-600 px-7 py-3 rounded-lg ml-4">Cancel</a>

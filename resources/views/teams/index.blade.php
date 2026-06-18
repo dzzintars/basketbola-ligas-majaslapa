@@ -10,7 +10,7 @@
             @can('admin')
             <div class="mb-4">
                 <a href="{{ route('teams.create') }}" class="btn-primary">
-                    + Add a team
+                    + {{ __('Add a team') }}
                 </a>
             </div>
             @endcan
@@ -34,7 +34,7 @@
                                     </h3>
 
                                     <div class="flex items-center text-gray-500 text-sm">
-                                        <span class="mr-2">City: </span>
+                                        <span class="mr-2">{{ __('City') }}: </span>
                                         <span>{{ $team->city }}</span>
                                     </div>
                                 </div>

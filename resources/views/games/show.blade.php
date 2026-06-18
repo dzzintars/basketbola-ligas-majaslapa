@@ -1,12 +1,18 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Game info') }}
+        </h2>
+    </x-slot>
+
     <div class="py-8 max-w-5xl mx-auto px-4">
         <div class="bg-white p-8 rounded-lg shadow mb-8 text-center relative">
-            @can('admin')
+            @can('manage-games')
                 <div class="absolute top-4 right-4 flex gap-2">
-                    <a href="{{ route('games.edit', $game->id) }}" class="btn-primary">Edit</a>
+                    <a href="{{ route('games.edit', $game->id) }}" class="btn-primary">{{ __('Edit') }}</a>
                     <form action="{{ route('games.destroy', $game->id) }}" method="POST" onsubmit="return confirm('Dzēst?');">
                         @csrf @method('DELETE')
-                        <button type="submit" class="!bg-red-500 btn-primary">Delete</button>
+                        <button type="submit" class="!bg-red-500 btn-primary">{{ __('Delete') }}</button>
                     </form>
                 </div>
             @endcan
@@ -25,7 +31,7 @@
                 <div class="w-1/3  rounded-lg p-4 hover:shadow-lg">
                     <a href="{{ route('teams.show', $game->homeTeam) }}">
                         <h2 class="text-2xl font-black">{{ $game->homeTeam->name }}</h2>
-                        <p class="text-gray-500">Home Team</p>
+                        <p class="text-gray-500">{{ __('Home team') }}</p>
                     </a>
                 </div>
                 <div class="w-2/3">
@@ -41,7 +47,7 @@
                 <div class="w-1/3  rounded-lg p-4 hover:shadow-lg">
                     <a href="{{ route('teams.show', $game->awayTeam) }}">
                         <h2 class="text-2xl font-black">{{ $game->awayTeam->name }}</h2>
-                        <p class="text-gray-500">Away Team</p>
+                        <p class="text-gray-500">{{ __('Away team') }}</p>
                     </a>
                 </div>
                 @if ($game->awayTeam->logo_path)
@@ -61,11 +67,10 @@
         </div>
 
         <div class="bg-white p-4 rounded-lg shadow mb-8 text-center relative">
-            <h2 class="font-bold text-xl">PLAYERS IN GAME</h2>
+            <h2 class="font-bold text-xl">{{ __('PLAYERS IN GAME') }}</h2>
             <div class="flex w-full">
                 <div class="bg-white overflow-hidden shadow-sm p-6 flex-1">
                     <h3 class="text-xl font-bold mb-4">{{ $game->homeTeam->name }}</h3>
-                    <!-- players.index -->
                     @if ($game->homeTeam->players->count() > 0)
                         @foreach ($game->homeTeam->players as $player)
                             <a href="{{ route('players.show', $player->id) }}"

@@ -2,12 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800">
-                {{ $team->name }} ({{ $team->city }})
+                {{ $team->name }}
             </h2>
             @can('admin')
                 <div class="flex gap-2">
                     <a href="{{ route('teams.edit', $team) }}" class="btn-primary">
-                        Edit
+                        {{ __('Edit') }}
                     </a>
 
                     <form action="{{ route('teams.destroy', $team) }}" method="POST"
@@ -15,7 +15,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="!bg-red-500 btn-primary">
-                            Delete
+                            {{ __('Delete') }}
                         </button>
                     </form>
                 </div>
@@ -34,13 +34,12 @@
                 @endif
                 <div>
                     <h1 class="text-3xl font-bold">{{ $team->name }}</h1>
-                    <p class="text-gray-500 text-lg">City: {{ $team->city }}</p>
+                    <p class="text-gray-500 text-lg">{{ __('City') }}: {{ $team->city }}</p>
                 </div>
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm p-6">
-                <h3 class="text-xl font-bold mb-4">Team roster</h3>
-                <!-- No players.index -->
+                <h3 class="text-xl font-bold mb-4">{{ __('Team roster') }}</h3>
                 @if ($team->players->count() > 0)
                     @foreach ($team->players as $player)
                         <a href="{{ route('players.show', $player->id) }}"
@@ -61,7 +60,7 @@
                         </a>
                     @endforeach
                 @else
-                    <p class="text-gray-500">This team has no players added.</p>
+                    <p class="text-gray-500">{{ __('This team has no players added') }}.</p>
                 @endif
             </div>
 

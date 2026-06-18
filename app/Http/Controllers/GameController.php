@@ -23,14 +23,14 @@ class GameController extends Controller
 
     public function create()
     {
-        Gate::authorize('admin');
+        Gate::authorize('manage-games');
         $teams = Team::all();
         return view('games.create', compact('teams'));
     }
 
     public function store(Request $request)
     {
-        Gate::authorize('admin');
+        Gate::authorize('manage-games');
         $validated = $request->validate([
             'home_team_id' => 'required|exists:teams,id',
             'away_team_id' => 'required|exists:teams,id|different:home_team_id',
@@ -39,7 +39,7 @@ class GameController extends Controller
             'season' => 'required|string|max:20',
             'status' => 'required|in:scheduled,finished',
             'home_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
-            'away_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0',
+            'away_score' => 'required_if:status,finished|prohibited_if:status,scheduled|nullable|integer|min:0|different:home_score',
         ]);
 
         Game::create($validated);
@@ -51,14 +51,14 @@ class GameController extends Controller
 
     public function edit(Game $game)
     {
-        Gate::authorize('admin');
+        Gate::authorize('manage-games');
         $teams = Team::all();
         return view('games.edit', compact('game', 'teams'));
     }
 
     public function update(Request $request, Game $game)
     {
-        Gate::authorize('admin');
+        Gate::authorize('manage-games');
         $validated = $request->validate([
             'home_team_id' => 'required|exists:teams,id',
             'away_team_id' => 'required|exists:teams,id|different:home_team_id',
@@ -77,7 +77,7 @@ class GameController extends Controller
 
     public function destroy(Game $game)
     {
-        Gate::authorize('admin');
+        Gate::authorize('manage-games');
         $game->delete();
         return redirect()->route('games.index')->with('success', 'Spēle izdzēsta!');
     }

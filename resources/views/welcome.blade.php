@@ -8,13 +8,8 @@
 
         @fonts
 
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
-            <style>
-                /* Fallback stylesheet layer rules included here */
-            </style>
-        @endif
+       
     </head>
     <body class="antialiased bg-gray-100 text-gray-900">
         
@@ -24,11 +19,11 @@
                 <x-application-logo class="w-25 h-25 mb-8 fill-current text-gray-600 mx-auto" />
 
                 <h1 class="text-3xl font-black text-gray-900 mb-2 tracking-tight">
-                    Basketball League System
+                    {{ __('Basketball League System') }}
                 </h1>
                 
                 <p class="text-gray-500 font-medium mb-8">
-                    Login to see all the content!
+                    {{ __('Login to see all the content!') }}
                 </p>
 
                 @if (Route::has('login'))
@@ -36,18 +31,18 @@
                         @auth
                             <a href="{{ url('/dashboard') }}" 
                                class="w-full inline-flex justify-center items-center py-3 px-6 text-white bg-gray-900 hover:bg-gray-800 font-bold rounded-xl shadow transition">
-                                Go to Dashboard
+                               {{ __('Go to Dashboard') }}
                             </a>
                         @else
                             <a href="{{ route('login') }}" 
                                class="w-full py-3 px-6 text-white bg-blue-500 hover:bg-blue-700 font-bold rounded-xl shadow transition">
-                                Log In
+                                {{ __('Log In') }}
                             </a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}" 
                                    class="w-full py-3 px-6 text-gray-700 bg-gray-200 hover:bg-gray-300 font-semibold rounded-xl transition">
-                                    Register
+                                    {{ __('Register') }}
                                 </a>
                             @endif
                         @endauth
