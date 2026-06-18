@@ -16,13 +16,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/standings', [TeamController::class, 'standings'])->name('standings.index');
     Route::resource('teams', TeamController::class);
+
     Route::resource('players', PlayerController::class);
     Route::resource('games', GameController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-require __DIR__.'/auth.php';
-
-Route::get('/admin/dashboard', [HomeController::class, 'index'])->middleware(['auth', 'admin']);
+require __DIR__ . '/auth.php';

@@ -18,7 +18,7 @@
                     
                     <div class="text-sm text-gray-500 md:w-1/4 text-center md:text-left mb-2 md:mb-0">
                         <div class="font-bold text-gray-700">{{ $game->game_date->format('d.m.Y H:i') }}</div>
-                        <div>Sezona: {{ $game->season }}</div>
+                        <div>Season: {{ $game->season }}</div>
                     </div>
 
                     <div class="flex items-center gap-4 md:w-2/4 justify-center">
