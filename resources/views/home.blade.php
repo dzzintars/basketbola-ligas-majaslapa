@@ -79,7 +79,8 @@
                         </thead>
                         <tbody>
                             @forelse($standings as $team)
-                                <tr class="border-b hover:bg-gray-50">
+                                <tr class="border-b hover:bg-gray-200 team-row" data-city="{{ $team->city }}"
+                                    data-name="{{ $team->name }}">
                                     <td class="p-3 font-bold text-gray-800 flex items-center gap-2">
                                         <span class="text-gray-400 font-normal">{{ $loop->iteration }}.</span>
                                         {{ $team->name }}
@@ -89,14 +90,19 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="p-6 text-center text-gray-500">{{ __('No standings available') }}.
+                                    <td colspan="3" class="p-6 text-center text-gray-500">
+                                        {{ __('No standings available') }}.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-
+                <div id="weather-container"
+                    class="bg-white overflow-hidden shadow-sm px-14 py-8 text-center rounded-lg">
+                    <h3 class="text-lg font-bold mb-4">{{ __('Weather') }}</h3>
+                    <span id="weather-text" class="text-lg mb-4">{{ __('Load weather') }}...</span>
+                </div>
             </div>
 
             <!-- admin only col -->
@@ -104,7 +110,8 @@
                 <div class="w-full lg:w-1/4 flex flex-col gap-4">
                     <div class="bg-white border rounded shadow-sm p-6 flex items-center justify-between mb-5">
                         <div>
-                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400">{{ __('Registered Users') }}</h3>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400">
+                                {{ __('Registered Users') }}</h3>
                             <p class="text-4xl font-black mt-1">{{ $usersCount }}</p>
                         </div>
                         <div class="p-3 rounded-full">
@@ -121,12 +128,12 @@
                         </div>
                         <div class="my-4 p-4 flex flex-col gap-4">
                             @can('admin')
-                            <a href="{{ route('teams.create') }}" class="btn-primary">
-                                + {{ __('Add a team') }}
-                            </a>
-                            <a href="{{ route('players.create') }}" class="btn-primary">
-                                + {{ __('Add a player') }}
-                            </a>
+                                <a href="{{ route('teams.create') }}" class="btn-primary">
+                                    + {{ __('Add a team') }}
+                                </a>
+                                <a href="{{ route('players.create') }}" class="btn-primary">
+                                    + {{ __('Add a player') }}
+                                </a>
                             @endcan
                             <a href="{{ route('games.create') }}" class="btn-primary">
                                 + {{ __('Add a game') }}
@@ -137,4 +144,39 @@
             @endcan
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const weatherText = document.getElementById('weather-text');
+        const teamRows = document.querySelectorAll('.team-row');
+        if (teamRows.length === 0) return;
+
+        async function fetchWeather(city, teamName) {
+            if (!city) return;
+            weatherText.innerHTML = `{{ __('Loading weather') }}...`;
+            try {
+                const response = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+                if (!response.ok) throw new Error('API Error');
+                
+                const data = await response.json();
+                const c = data.current_condition[0];
+                
+                weatherText.innerText = `${teamName} (${city}): 🌡️ ${c.weatherDesc[0].value}, ${c.temp_C}°C`;
+            } catch (error) {
+                weatherText.innerText = "Neizdevās ielādēt laikapstākļus.";
+                console.error("Fetch kļūda:", error);
+            }
+        }
+
+        const firstRow = teamRows[0];
+        fetchWeather(firstRow.getAttribute('data-city'), firstRow.getAttribute('data-name'));
+
+        teamRows.forEach(row => {
+            row.addEventListener('click', function() {
+                const city = this.getAttribute('data-city');
+                const teamName = this.getAttribute('data-name');
+                fetchWeather(city, teamName);
+            });
+        });
+    });
+    </script>
 </x-app-layout>
