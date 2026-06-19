@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class GamePlayer extends Model
 {
-    /** @use HasFactory<\Database\Factories\GamePlayerFactory> */
-    use HasFactory;
-
      protected $fillable = [
         'player_id', 'game_id', 'points', 'rebounds', 'assists',
         'steals', 'blocks', 'turnovers', 'created_by'

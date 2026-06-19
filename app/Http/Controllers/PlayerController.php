@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class PlayerController extends Controller
 {
-    // Attēlo spēlētājus ar filtriem
     public function index(Request $request)
     {
         $query = Player::with('team');
@@ -42,6 +41,7 @@ class PlayerController extends Controller
 
         return view('players.show', compact('player', 'games'));
     }
+
 
     public function create()
     {
