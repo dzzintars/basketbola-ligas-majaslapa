@@ -119,8 +119,8 @@
                         <p class="text-gray-500">This team has no players added.</p>
                     @endif
                 </div>
+
             </div>
         </div>
-
     </div>
 </x-app-layout>

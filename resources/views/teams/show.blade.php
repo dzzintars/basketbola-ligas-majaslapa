@@ -53,7 +53,7 @@
 
                             <div>
                                 <h3 class="font-bold text-lg ">{{ $player->name }}</h3>
-                                <p class="text-sm text-gray-600">{{ $player->team->name ?? 'No team' }}</p>
+                                <p class="text-sm text-gray-600">{{ $team->name ?? 'No team' }}</p>
                                 <p class="text-xs text-gray-500 font-semibold mt-1">#{{ $player->jersey_number }} |
                                     {{ $player->position }}</p>
                             </div>
@@ -63,7 +63,31 @@
                     <p class="text-gray-500">{{ __('This team has no players added') }}.</p>
                 @endif
             </div>
-
+            
+            <div id="weather-container"
+                class="bg-white overflow-hidden shadow-sm p-6 rounded-lg">
+                <h3 class="text-lg font-bold mb-4">Weather</h3>
+                <span id="weather-text" class="text-lg mb-4">{{ __('Ielādē laikapstākļus') }}...</span>
+            </div>
         </div>
     </div>
+     <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const weatherText = document.getElementById('weather-text');
+        const city = "{{ $team->city }}";
+        const txt = "{{ __('Currently in teams city') }}";
+        try {
+            const response = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+            if (!response.ok) {
+                throw new Error('API Error');
+            }
+            const data = await response.json();
+            const c = data.current_condition[0];
+            weatherText.innerText = `${txt} (${city}): 🌡️ ${c.weatherDesc[0].value}, ${c.temp_C}°C`;
+        } catch (error) {
+            weatherText.innerText = "Neizdevās ielādēt laikapstākļus.";
+            console.error("Fetch kļūda:", error);
+        }
+    });
+</script>
 </x-app-layout>
