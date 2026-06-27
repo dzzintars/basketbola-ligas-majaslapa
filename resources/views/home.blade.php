@@ -166,7 +166,7 @@
                 console.error("Fetch kļūda:", error);
             }
         }
-
+        
         const firstRow = teamRows[0];
         fetchWeather(firstRow.getAttribute('data-city'), firstRow.getAttribute('data-name'));
 
